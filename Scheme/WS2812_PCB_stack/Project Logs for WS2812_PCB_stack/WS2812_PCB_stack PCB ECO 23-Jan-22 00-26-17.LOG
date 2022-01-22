@@ -1,0 +1,10 @@
+Added Component: Designator=U1(WS2812_conn)
+Added Component: Designator=U14(WS2812_conn)
+Added Pin To Net: NetName=NetC1_2 Pin=U1-1
+Added Pin To Net: NetName=NetU1_2 Pin=U1-2
+Added Pin To Net: NetName=GND Pin=U1-3
+Added Pin To Net: NetName=NetC1_2 Pin=U14-1
+Added Pin To Net: NetName=NetU13_2 Pin=U14-2
+Added Pin To Net: NetName=GND Pin=U14-3
+Added Member To Class: ClassName=WS2812_PCB_stack Member=Component U1 PCB IN
+Added Member To Class: ClassName=WS2812_PCB_stack Member=Component U14 PCB OUT
