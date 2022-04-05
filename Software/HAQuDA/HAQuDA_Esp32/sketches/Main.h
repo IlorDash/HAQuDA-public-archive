@@ -7,6 +7,8 @@
 
 #define DISP_PARAMS_NUM 5
 
+#define SENS_POW 23
+
 typedef enum { snake, randomPixel, fade, christmasTree, noneEffect } dispEffects;
 
 typedef struct {

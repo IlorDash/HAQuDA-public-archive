@@ -32,7 +32,7 @@ enum dispParams { total, eCO2, TVOC, PM2_5, temp, humid, noneParam };
 dispParams whatParamDisp = noneParam;
 
 enum dispMode { standard, multi, night, noneMode };
-dispMode whatModeDisp = standard;
+dispMode whatModeDisp = noneMode;
 
 typedef struct {
 	dispParams paramsArr[MULTI_MODE_PARAM_NUM];
@@ -133,6 +133,9 @@ void connectToWiFi_AP() {
 void setup() {
 	Serial.begin(115200);
 
+	pinMode(SENS_POW, OUTPUT);
+	digitalWrite(SENS_POW, HIGH);
+
 	currentTimeBorder.timeFirstBorder = 21;
 	currentTimeBorder.timeSecondBorder = 9;
 
@@ -143,6 +146,7 @@ void setup() {
 		WS2812_fillColor(COLOR_RED);
 		terminal.println("FATAL ERROR: Failed to begin sensors");
 		while (1) {
+			sensorsBegin();
 		}
 	}
 
@@ -160,6 +164,17 @@ void setup() {
 	terminal.println("*************************");
 	terminal.print("START LOGGING");
 
+	whatModeDisp = multi;
+
+	multiModeStruct.paramsArr[0] = temp;
+	multiModeStruct.paramsArr[1] = eCO2;
+	multiModeStruct.paramsArr[2] = PM2_5;
+
+	multiModeStruct.divideDotsArr[0] = temp_divideDots;
+	multiModeStruct.divideDotsArr[1] = eCO2_divideDots;
+	multiModeStruct.divideDotsArr[2] = PM2_5_divideDots;
+	
+	dispParam_WS2812();
 	// pinMode(LED_BUILTIN, OUTPUT);
 
 	// createAP();
@@ -195,7 +210,6 @@ void loop() {
 		getDHT11_meas();
 		getCCS811_meas();
 		getPM_meas();
-		getO3_meas();
 
 		measNum++;
 		blynkPrintLog();
@@ -433,9 +447,6 @@ void checkIfMeasCorrect() {
 	if (!humid_meas.newMeasDone) {
 		terminal.println("ERROR: Failed to get HUMID measurment");
 	}
-	if (!O3_meas.newMeasDone) {
-		terminal.println("ERROR: Failed to get O3 measurment");
-	}
 	terminal.flush();
 
 	eCO2_meas.newMeasDone = false;
@@ -443,7 +454,6 @@ void checkIfMeasCorrect() {
 	PM_2_5_meas.newMeasDone = false;
 	temp_meas.newMeasDone = false;
 	humid_meas.newMeasDone = false;
-	O3_meas.newMeasDone = false;
 }
 
 void blynkPrintLog() {
@@ -486,11 +496,6 @@ void blynkPrintLog() {
 	terminal.print("TVOC: ");
 	terminal.print(TVOC_meas.value / TVOC_meas.measNum);
 	terminal.println("  ppb");
-	terminal.println();
-
-	terminal.print("O3: ");
-	terminal.print(O3_meas.value / O3_meas.measNum);
-	terminal.println("  ppm");
 	terminal.println();
 
 	terminal.flush();

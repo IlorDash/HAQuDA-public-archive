@@ -180,7 +180,7 @@
         <DebugMethod>
           <ID>openocd</ID>
           <Configuration xsi:type="com.visualgdb.edp.openocd.settings.esp32">
-            <CommandLine>-f interface/jlink.cfg -c "adapter_khz 10000" -f target/esp32.cfg</CommandLine>
+            <CommandLine>-f interface/jlink.cfg -c "adapter_khz 1000" -f target/esp32.cfg</CommandLine>
             <ExtraParameters>
               <Frequency xsi:nil="true" />
               <BoostedFrequency xsi:nil="true" />
@@ -194,6 +194,7 @@
               <string>mon gdb_breakpoint_override hard</string>
               <string>mon reset halt</string>
               <string>load</string>
+              <string>power on perm</string>
             </StartupCommands>
             <ProgramFLASHUsingExternalTool>false</ProgramFLASHUsingExternalTool>
             <PreferredGDBPort>0</PreferredGDBPort>
