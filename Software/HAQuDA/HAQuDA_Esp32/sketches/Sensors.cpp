@@ -6,7 +6,7 @@
 #define ZH03B_RX_PIN 17
 #define ZH03B_TX_PIN 16
 
-#define CCS811_WAK 26
+#define CCS811_WAK 5
 
 #define PM_BUF_LEN 31 // 0x42 + 31 bytes equal to 32 bytes
 
