@@ -17,7 +17,7 @@
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 
-char BlynkAuth[] = "4MdAV357utNNjm7vmCUEY2NPAdlHQMSM";
+char BlynkAuth[] = BLYNK_AUTH;
 char ssid_AP[] = "HAQuDA_ESP32";
 char pass_AP[] = "1234567!";
 
@@ -25,8 +25,8 @@ IPAddress local_ip(192, 168, 0, 198);
 IPAddress gateway(192, 168, 0, 1);
 IPAddress subnet(255, 255, 255, 0);
 
-char *ssidArr[WIFI_CREDS_NUM] = {"ENTER", "YOUR", "SSIDs"};
-char *passArr[WIFI_CREDS_NUM] = {"ENTER", "YOUR", "PASSWORDs"};
+char ssid[] = WIFI_SSID;
+char pass[] = WIFI_PASS;
 
 enum dispParams { total, eCO2, TVOC, PM2_5, temp, humid, noneParam };
 dispParams whatParamDisp = noneParam;
@@ -90,7 +90,7 @@ void WiFi_handleConnection() {
 	while (WiFiCredsFound && (status != WL_CONNECTED) && (i < WIFI_CREDS_NUM)) {
 		WS2812_clear();
 		delay(100);
-		connectToWiFi(ssidArr[i], passArr[i]);
+		connectToWiFi(ssid, pass);
 		status = WiFi.status();
 		if (status != WL_CONNECTED) {
 			WS2812_setPixelColor(j, COLOR_YELLOW);
@@ -121,7 +121,7 @@ void connectToWiFi_AP() {
 	int i = 0;
 	wl_status_t status = WiFi.status();
 	while (WiFiCredsFound && (status != WL_CONNECTED) && (i < WIFI_CREDS_NUM)) {
-		connectToWiFi(ssidArr[i], passArr[i]);
+		connectToWiFi(ssid, pass);
 		i++;
 		status = WiFi.status();
 		if (i == WIFI_CREDS_NUM) {
@@ -131,7 +131,7 @@ void connectToWiFi_AP() {
 }
 
 void setup() {
-	Serial.begin(115200);
+	//Serial.begin(115200);
 
 	pinMode(SENS_POW, OUTPUT);
 	digitalWrite(SENS_POW, HIGH);
@@ -139,14 +139,13 @@ void setup() {
 	currentTimeBorder.timeFirstBorder = 21;
 	currentTimeBorder.timeSecondBorder = 9;
 
-	WiFi_handleConnection();
+	//WiFi_handleConnection();
 
 	WS2812_begin();
 	if (!sensorsBegin()) {
 		WS2812_fillColor(COLOR_RED);
 		terminal.println("FATAL ERROR: Failed to begin sensors");
 		while (1) {
-			sensorsBegin();
 		}
 	}
 
@@ -154,11 +153,11 @@ void setup() {
 
 	// Initialize a NTPClient to get time
 	timeClient.begin();
-	// Set offset time in seconds to adjust for your timezone, for example:
-	// GMT +1 = 3600
-	// GMT +8 = 28800
-	// GMT +3 = 10800
-	// GMT 0 = 0
+//	// Set offset time in seconds to adjust for your timezone, for example:
+//	// GMT +1 = 3600
+//	// GMT +8 = 28800
+//	// GMT +3 = 10800
+//	// GMT 0 = 0
 	timeClient.setTimeOffset(10800);
 
 	terminal.println("*************************");
@@ -175,19 +174,6 @@ void setup() {
 	multiModeStruct.divideDotsArr[2] = PM2_5_divideDots;
 	
 	dispParam_WS2812();
-	// pinMode(LED_BUILTIN, OUTPUT);
-
-	// createAP();
-
-	// Start web server-
-
-	// Serial.print("AP IP address: ");
-	// Serial.println(ip_address);
-
-	// server.on("/", setWiFiCreds);
-	// server.onNotFound(handle_NotFound);
-	// server.begin();
-	// Serial.println("HTTP server started");
 }
 
 uint16_t measNum = 0;
